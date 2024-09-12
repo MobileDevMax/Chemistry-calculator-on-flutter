@@ -1,0 +1,86 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(ChemistryCalculatorApp());
+}
+
+class ChemistryCalculatorApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Chemistry calculator',
+      home: ChemistryCalculatorScreen(),
+    );
+  }
+}
+
+class ChemistryCalculatorScreen extends StatefulWidget {
+  @override
+  _ChemistryCalculatorScreenState createState() => _ChemistryCalculatorScreenState();
+}
+
+class _ChemistryCalculatorScreenState extends State<ChemistryCalculatorScreen> {
+  final TextEditingController _massController = TextEditingController();
+  final TextEditingController _volumeController = TextEditingController();
+  String _concentration = '';
+
+  void _calculateConcentration() {
+    double mass = double.tryParse(_massController.text) ?? 0;
+    double volume = double.tryParse(_volumeController.text) ?? 1; // Volume should not be 0
+
+    if (volume > 0) {
+      double concentration = mass / volume; // Concentration = mass / volume
+      setState(() {
+        _concentration = concentration.toStringAsFixed(2); // Format with 2 decimal places
+      });
+    } else {
+      setState(() {
+        _concentration = 'Volume cannot be 0';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Chemistry calculator'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            TextField(
+              controller: _massController,
+              decoration: InputDecoration(
+                labelText: 'Enter mass (g)',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 16),
+            TextField(
+              controller: _volumeController,
+              decoration: InputDecoration(
+                labelText: 'Enter volume (l)',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _calculateConcentration,
+              child: Text('Calculate concentration'),
+            ),
+            SizedBox(height: 16),
+            Text(
+              _concentration.isNotEmpty ? 'Concentration: $_concentration g/l' : '',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
